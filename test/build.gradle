@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+group 'ljh.java.com'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile(project(":framework")) //导出的test jar包中会包含framework jar
+}
+
+jar{
+    manifest{ //指定入口
+        attributes "Main-Class":"com.java.ljh.Application"
+    }
+    from{ //递归导入所依赖的jar
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
